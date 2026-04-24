@@ -486,85 +486,183 @@
     .button:active { transform: scale(0.98); }
     .button:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
-    /* ── Heart buttons ── */
-    .heart-group {
+    /* ── Choice buttons (Going/Not Going & Yes/No) ── */
+    .choice-group {
       display: flex;
       justify-content: center;
-      gap: 26px;
+      gap: 28px;
       margin: 26px 0;
       flex-wrap: wrap;
     }
-    .heart-option {
-      width: 115px; height: 115px; border-radius: 50%;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      cursor: pointer; transition: transform 0.22s, box-shadow 0.22s;
-      text-align: center; padding: 10px; border: none; outline: none;
+    .choice-btn {
+      width: 115px;
+      height: 115px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.28s cubic-bezier(.4,0,.2,1);
+      text-align: center;
+      padding: 10px;
+      border: none;
+      outline: none;
       font-family: 'Jost', sans-serif;
+      position: relative;
     }
-    .heart-option .heart { font-size: 36px; margin-bottom: 2px; }
-    .heart-option .label { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 400; }
-    .heart-option:hover { transform: scale(1.05); }
-    .heart-option:active { transform: scale(0.95); }
-    .radio-group.heart-group label.heart-option { cursor: pointer; }
-    .radio-group.heart-group label.heart-option input { display: none; }
-    .heart-text {
-      width: 100%; height: 100%; border-radius: 50%;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      font-size: 13px; line-height: 1.35;
-      transition: background 0.25s, transform 0.22s;
-      border: 2px solid rgba(184,153,90,0.28);
-      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.85);
+    .choice-btn .choice-icon {
+      font-size: 28px;
+      margin-bottom: 6px;
+      transition: transform 0.28s ease;
+      line-height: 1;
     }
-    .radio-group .heart-option input:checked + .heart-text {
-      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-      border-color: var(--gold-light); transform: translateY(-3px);
-      color: #fff; box-shadow: 0 10px 24px rgba(138,111,58,0.4);
+    .choice-btn .choice-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 400;
+      transition: color 0.28s ease;
     }
-    .heart-option.going {
+    .choice-btn:hover {
+      transform: translateY(-3px);
+    }
+    .choice-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Going / Yes button */
+    .choice-btn.affirmative {
+      background: rgba(107,122,68,0.18);
+      border: 2px solid rgba(107,122,68,0.45);
+      color: rgba(255,255,255,0.85);
+      box-shadow: 0 6px 22px rgba(107,122,68,0.15);
+    }
+    .choice-btn.affirmative:hover {
       background: linear-gradient(135deg, var(--olive) 0%, var(--olive-dark) 100%);
-      color: #fff; border: 2px solid rgba(255,255,255,0.16);
-      box-shadow: 0 10px 28px rgba(85,97,52,0.34);
+      border-color: rgba(255,255,255,0.25);
+      color: #fff;
+      box-shadow: 0 12px 34px rgba(85,97,52,0.4);
     }
-    .heart-option.not-going {
-      background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.68);
-      border: 2px solid rgba(255,255,255,0.12); box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    .choice-btn.affirmative:hover .choice-icon {
+      transform: scale(1.1);
     }
-    .heart-option.going:hover { box-shadow: 0 14px 34px rgba(85,97,52,0.46); }
+
+    /* Not Going / No button */
+    .choice-btn.negative {
+      background: rgba(255,255,255,0.04);
+      border: 2px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.6);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    }
+    .choice-btn.negative:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.8);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+    }
+    .choice-btn.negative:hover .choice-icon {
+      transform: scale(1.05);
+    }
+
+    /* Radio button version (Yes/No for +1) */
+    .radio-group.choice-group label.choice-btn {
+      cursor: pointer;
+    }
+    .radio-group.choice-group label.choice-btn input {
+      display: none;
+    }
+    .radio-group .choice-btn input:checked + .choice-btn-inner {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      border: 2px solid var(--gold-light);
+      color: #fff;
+      box-shadow: 0 10px 28px rgba(138,111,58,0.45);
+    }
+    .choice-btn-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.28s ease;
+    }
+    .radio-group .choice-btn input:checked ~ .choice-btn-inner {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      border: 2px solid var(--gold-light);
+      color: #fff;
+      box-shadow: 0 10px 28px rgba(138,111,58,0.45);
+      transform: translateY(-2px);
+    }
 
     /* ── Event details ── */
     .event-details {
-      background: rgba(184,153,90,0.07); border: 1px solid rgba(184,153,90,0.16);
-      border-radius: 14px; padding: 17px 20px; margin: 12px 0;
-      font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.78);
-      font-weight: 300; text-align: center;
+      background: rgba(184,153,90,0.07);
+      border: 1px solid rgba(184,153,90,0.16);
+      border-radius: 14px;
+      padding: 17px 20px;
+      margin: 12px 0;
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.78);
+      font-weight: 300;
+      text-align: center;
     }
     .event-details strong {
-      font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase;
-      color: var(--gold-light); font-weight: 400; display: block; margin-bottom: 4px;
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      font-weight: 400;
+      display: block;
+      margin-bottom: 4px;
     }
 
     /* ── Success ── */
     .success-message {
-      font-size: 15px; color: #a8d5a2; margin-top: 20px;
-      line-height: 1.6; font-weight: 300; display: none; text-align: center;
+      font-size: 15px;
+      color: #a8d5a2;
+      margin-top: 20px;
+      line-height: 1.6;
+      font-weight: 300;
+      display: none;
+      text-align: center;
     }
     .success-message.visible { display: block; }
     .success-message:not(.hidden) { display: block; }
 
     /* ── Name suggestions ── */
     .name-suggestions {
-      position: absolute; left: 0; right: 0; top: calc(100% + 6px);
-      z-index: 999; border-radius: 12px; overflow: hidden;
+      position: absolute;
+      left: 0; right: 0;
+      top: calc(100% + 6px);
+      z-index: 999;
+      border-radius: 12px;
+      overflow: hidden;
       border: 1px solid rgba(184,153,90,0.25);
-      background: rgba(20,14,8,0.97); backdrop-filter: blur(14px);
-      max-height: 200px; overflow-y: auto;
+      background: rgba(20,14,8,0.97);
+      backdrop-filter: blur(14px);
+      max-height: 200px;
+      overflow-y: auto;
     }
     .name-suggestions.hidden { display: none !important; }
     .name-suggestions .item {
-      padding: 12px 16px; font-size: 14px; cursor: pointer;
-      color: rgba(255,255,255,0.84); font-weight: 300;
+      padding: 12px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      color: rgba(255,255,255,0.84);
+      font-weight: 300;
       border-bottom: 1px solid rgba(255,255,255,0.05);
-      transition: background 0.15s; text-align: left;
+      transition: background 0.15s;
+      text-align: left;
     }
     .name-suggestions .item:last-child { border-bottom: none; }
     .name-suggestions .item:hover { background: rgba(184,153,90,0.16); }
@@ -622,11 +720,10 @@
       .card { padding: 46px 14px 24px; border-radius: 20px; }
       .card h2 { font-size: 24px; }
       .card p { font-size: 13px; }
-      .heart-option { width: 90px; height: 90px; }
-      .heart-option .heart { font-size: 26px; }
-      .heart-option .label { font-size: 10px; }
-      .heart-text { font-size: 11px; }
-      .heart-group { gap: 14px; }
+      .choice-btn { width: 95px; height: 95px; }
+      .choice-btn .choice-icon { font-size: 24px; }
+      .choice-btn .choice-label { font-size: 10px; letter-spacing: 1.5px; }
+      .choice-group { gap: 16px; }
       .back-btn { top: 10px; left: 10px; font-size: 10px; padding: 6px 11px; }
       .button { padding: 12px 24px; font-size: 12px; }
       .event-details { padding: 12px 14px; font-size: 12px; }
@@ -653,9 +750,9 @@
       .rsvp-container { max-width: 340px; padding: 0 8px; }
       .card { padding: 42px 10px 18px; border-radius: 18px; }
       .card h2 { font-size: 20px; }
-      .heart-option { width: 78px; height: 78px; }
-      .heart-option .heart { font-size: 24px; }
-      .heart-text { font-size: 10px; }
+      .choice-btn { width: 82px; height: 82px; }
+      .choice-btn .choice-icon { font-size: 21px; }
+      .choice-btn .choice-label { font-size: 9px; letter-spacing: 1px; }
       .liquid-track { width: 130px; }
     }
 
@@ -712,6 +809,7 @@
         </div>
       </div>
 
+      <!-- Page 2: Guest Details -->
       <div id="page2" class="card hidden">
         <button type="button" class="back-btn" onclick="goBack()" aria-label="Back">
           <span class="back-icon" aria-hidden="true">←</span> Back
@@ -737,6 +835,7 @@
         </form>
       </div>
 
+      <!-- Page 4: Church Wedding -->
       <div id="page4" class="card hidden">
         <button type="button" class="back-btn" onclick="goBack()" aria-label="Back">
           <span class="back-icon" aria-hidden="true">←</span> Back
@@ -748,18 +847,19 @@
           2:00 PM – 4:00 PM &nbsp;·&nbsp; 10 October 2026
         </div>
         <p style="margin-top: 22px;">Will you be attending?</p>
-        <div class="heart-group">
-          <button type="button" class="heart-option going" onclick="handleChurchAttendance('Yes')">
-            <span class="heart">❤️</span>
-            <span class="label">Going</span>
+        <div class="choice-group">
+          <button type="button" class="choice-btn affirmative" onclick="handleChurchAttendance('Yes')">
+            <span class="choice-icon">✧</span>
+            <span class="choice-label">Going</span>
           </button>
-          <button type="button" class="heart-option not-going" onclick="handleChurchAttendance('No')">
-            <span class="heart">💔</span>
-            <span class="label">Can't Go</span>
+          <button type="button" class="choice-btn negative" onclick="handleChurchAttendance('No')">
+            <span class="choice-icon">✕</span>
+            <span class="choice-label">Can't Go</span>
           </button>
         </div>
       </div>
 
+      <!-- Page 8: +1 (Church) -->
       <div id="page8" class="card hidden">
         <button type="button" class="back-btn" onclick="goBack()" aria-label="Back">
           <span class="back-icon" aria-hidden="true">←</span> Back
@@ -767,18 +867,25 @@
         <h2>Church +1</h2>
         <div class="card-gold-rule"></div>
         <p>Bringing someone to the church wedding?</p>
-        <div class="radio-group heart-group">
-          <label class="heart-option">
+        <div class="radio-group choice-group">
+          <label class="choice-btn affirmative">
             <input type="radio" name="plusOneQuestion" value="Yes" onchange="handleChurchPlusOne(true)">
-            <span class="heart-text">💑<br>Yes</span>
+            <span class="choice-btn-inner">
+              <span class="choice-icon">✧</span>
+              <span class="choice-label">Yes</span>
+            </span>
           </label>
-          <label class="heart-option">
+          <label class="choice-btn negative">
             <input type="radio" name="plusOneQuestion" value="No" onchange="handleChurchPlusOne(false)">
-            <span class="heart-text">💔<br>No</span>
+            <span class="choice-btn-inner">
+              <span class="choice-icon">✕</span>
+              <span class="choice-label">No</span>
+            </span>
           </label>
         </div>
       </div>
 
+      <!-- Page 3: +1 Details (Church) -->
       <div id="page3" class="card hidden">
         <button type="button" class="back-btn" onclick="goBack()" aria-label="Back">
           <span class="back-icon" aria-hidden="true">←</span> Back
@@ -794,6 +901,7 @@
         </div>
       </div>
 
+      <!-- Page 6: Wedding Dinner -->
       <div id="page6" class="card hidden">
         <button type="button" class="back-btn" onclick="goBack()" aria-label="Back">
           <span class="back-icon" aria-hidden="true">←</span> Back
@@ -805,18 +913,19 @@
           6:30 PM – 10:30 PM &nbsp;·&nbsp; 10 October 2026
         </div>
         <p style="margin-top: 22px;">Will you be attending?</p>
-        <div class="heart-group">
-          <button type="button" class="heart-option going" onclick="handleDinnerAttendance('Yes')">
-            <span class="heart">❤️</span>
-            <span class="label">Going</span>
+        <div class="choice-group">
+          <button type="button" class="choice-btn affirmative" onclick="handleDinnerAttendance('Yes')">
+            <span class="choice-icon">✧</span>
+            <span class="choice-label">Going</span>
           </button>
-          <button type="button" class="heart-option not-going" onclick="handleDinnerAttendance('No')">
-            <span class="heart">💔</span>
-            <span class="label">Can't Go</span>
+          <button type="button" class="choice-btn negative" onclick="handleDinnerAttendance('No')">
+            <span class="choice-icon">✕</span>
+            <span class="choice-label">Can't Go</span>
           </button>
         </div>
       </div>
 
+      <!-- Page 9: +1 (Dinner) -->
       <div id="page9" class="card hidden">
         <button type="button" class="back-btn" onclick="goBack()" aria-label="Back">
           <span class="back-icon" aria-hidden="true">←</span> Back
@@ -824,18 +933,25 @@
         <h2>Dinner +1</h2>
         <div class="card-gold-rule"></div>
         <p>Bringing someone to the dinner?</p>
-        <div class="radio-group heart-group">
-          <label class="heart-option">
+        <div class="radio-group choice-group">
+          <label class="choice-btn affirmative">
             <input type="radio" name="dinnerPlusOneQuestion" value="Yes" onchange="handleDinnerPlusOne(true)">
-            <span class="heart-text">💑<br>Yes</span>
+            <span class="choice-btn-inner">
+              <span class="choice-icon">✧</span>
+              <span class="choice-label">Yes</span>
+            </span>
           </label>
-          <label class="heart-option">
+          <label class="choice-btn negative">
             <input type="radio" name="dinnerPlusOneQuestion" value="No" onchange="handleDinnerPlusOne(false)">
-            <span class="heart-text">💔<br>No</span>
+            <span class="choice-btn-inner">
+              <span class="choice-icon">✕</span>
+              <span class="choice-label">No</span>
+            </span>
           </label>
         </div>
       </div>
 
+      <!-- Page 10: +1 Details (Dinner) -->
       <div id="page10" class="card hidden">
         <button type="button" class="back-btn" onclick="goBack()" aria-label="Back">
           <span class="back-icon" aria-hidden="true">←</span> Back
@@ -851,6 +967,7 @@
         </div>
       </div>
 
+      <!-- Page 5: Notes + Submit -->
       <div id="page5" class="card hidden">
         <button type="button" class="back-btn" onclick="goBack()" aria-label="Back">
           <span class="back-icon" aria-hidden="true">←</span> Back
