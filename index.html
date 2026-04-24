@@ -595,7 +595,11 @@
         max-height: 100dvh;
       }
       .content-layer { padding: 0; }
-      .hero-section { padding-bottom: 12vh; }
+      .hero-section {
+        justify-content: flex-start;
+        padding-top: 10vh;
+        padding-bottom: 0;
+      }
       .hero-frame { padding: 18px 20px 22px; margin-bottom: 10px; }
       .hero-frame .corner { width: 16px; height: 16px; }
       .hero-title { font-size: 40px; }
@@ -603,7 +607,15 @@
       .hero-info-group { margin-top: 6px; }
       .hero-date { font-size: 22px; }
       .hero-location-hint { font-size: 11px; margin-top: 4px; }
-      .hero-cta-btn { padding: 16px 36px; font-size: 14px; letter-spacing: 2px; margin-top: 24px; }
+      .hero-cta-btn {
+        padding: 16px 36px;
+        font-size: 14px;
+        letter-spacing: 2px;
+        margin-top: auto;
+        margin-bottom: 10vh;
+        position: absolute;
+        bottom: 0;
+      }
       .rsvp-container { max-width: 400px; padding: 0 12px; }
       .stepper { margin-bottom: 16px; }
       .liquid-track { width: 170px; }
@@ -624,7 +636,7 @@
     }
 
     @media (max-width: 420px) {
-      .hero-section { padding-bottom: 10vh; }
+      .hero-section { padding-top: 8vh; }
       .hero-frame { padding: 14px 12px 16px; }
       .hero-frame .corner { width: 12px; height: 12px; }
       .hero-title { font-size: 32px; }
@@ -633,7 +645,11 @@
       .hero-subtitle { font-size: 9px; letter-spacing: 3px; }
       .hero-date { font-size: 19px; }
       .hero-location-hint { font-size: 10px; }
-      .hero-cta-btn { padding: 14px 28px; font-size: 13px; margin-top: 20px; }
+      .hero-cta-btn {
+        padding: 14px 28px;
+        font-size: 13px;
+        margin-bottom: 8vh;
+      }
       .rsvp-container { max-width: 340px; padding: 0 8px; }
       .card { padding: 42px 10px 18px; border-radius: 18px; }
       .card h2 { font-size: 20px; }
