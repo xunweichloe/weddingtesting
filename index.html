@@ -76,7 +76,6 @@
         max-height: 88dvh;
       }
     }
-    /* Background mode during questions - visible but soft */
     .photo-background.background-mode {
       opacity: 0.55;
       filter: brightness(0.5) blur(3px);
@@ -538,7 +537,6 @@
       transform: translateY(-3px);
     }
 
-    /* Affirmative (Going / Yes) */
     .choice-btn.affirmative {
       background: rgba(107,122,68,0.2);
       border: 2px solid rgba(107,122,68,0.5);
@@ -555,7 +553,6 @@
       transform: scale(1.1);
     }
 
-    /* Negative (Not Going / No) */
     .choice-btn.negative {
       background: rgba(255,255,255,0.05);
       border: 2px solid rgba(255,255,255,0.14);
@@ -572,7 +569,6 @@
       transform: scale(1.05);
     }
 
-    /* Radio button version (Yes/No for +1) */
     .radio-group.choice-group label.choice-btn {
       cursor: pointer;
     }
@@ -1027,10 +1023,16 @@
     };
 
     let rsvpData = {
-      guestName: null, phone: null,
-      churchPlusOne: { bringing: false, name: null },
-      dinnerPlusOne: { bringing: false, name: null },
-      inviteGroup: null, churchAttendance: null, dinnerAttendance: null, notes: null
+      guestName: null,
+      phone: null,
+      inviteGroup: null,
+      churchAttendance: null,
+      churchPlusOne: false,
+      churchPlusOneName: null,
+      dinnerAttendance: null,
+      dinnerPlusOne: false,
+      dinnerPlusOneName: null,
+      notes: null
     };
     let pageHistory = [];
     let isSubmitting = false;
@@ -1054,10 +1056,16 @@
 
     function startRSVP() {
       rsvpData = {
-        guestName: null, phone: null,
-        churchPlusOne: { bringing: false, name: null },
-        dinnerPlusOne: { bringing: false, name: null },
-        inviteGroup: null, churchAttendance: null, dinnerAttendance: null, notes: null
+        guestName: null,
+        phone: null,
+        inviteGroup: null,
+        churchAttendance: null,
+        churchPlusOne: false,
+        churchPlusOneName: null,
+        dinnerAttendance: null,
+        dinnerPlusOne: false,
+        dinnerPlusOneName: null,
+        notes: null
       };
       pageHistory = [];
       isSubmitting = false;
@@ -1172,36 +1180,50 @@
     function handleChurchAttendance(answer) {
       rsvpData.churchAttendance = answer;
       if (answer === 'Yes') { showPage('page8'); }
-      else { rsvpData.churchPlusOne = { bringing: false, name: null }; if (rsvpData.inviteGroup === 'C') { showPage('page6'); } else { showPage('page5'); } }
+      else {
+        rsvpData.churchPlusOne = false;
+        rsvpData.churchPlusOneName = null;
+        if (rsvpData.inviteGroup === 'C') { showPage('page6'); } else { showPage('page5'); }
+      }
     }
 
     function handleChurchPlusOne(bringing) {
-      rsvpData.churchPlusOne.bringing = bringing;
+      rsvpData.churchPlusOne = bringing;
       if (bringing) { showPage('page3'); }
-      else { rsvpData.churchPlusOne.name = null; if (rsvpData.inviteGroup === 'C') { showPage('page6'); } else { showPage('page5'); } }
+      else {
+        rsvpData.churchPlusOneName = null;
+        if (rsvpData.inviteGroup === 'C') { showPage('page6'); } else { showPage('page5'); }
+      }
     }
 
     function submitChurchPlusOneDetails() {
       const plusName = (document.getElementById('plusOneName')?.value || '').trim();
-      rsvpData.churchPlusOne.name = plusName ? plusName : null;
+      rsvpData.churchPlusOneName = plusName || null;
       if (rsvpData.inviteGroup === 'C') { showPage('page6'); } else { showPage('page5'); }
     }
 
     function handleDinnerAttendance(answer) {
       rsvpData.dinnerAttendance = answer;
       if (answer === 'Yes') { showPage('page9'); }
-      else { rsvpData.dinnerPlusOne = { bringing: false, name: null }; showPage('page5'); }
+      else {
+        rsvpData.dinnerPlusOne = false;
+        rsvpData.dinnerPlusOneName = null;
+        showPage('page5');
+      }
     }
 
     function handleDinnerPlusOne(bringing) {
-      rsvpData.dinnerPlusOne.bringing = bringing;
+      rsvpData.dinnerPlusOne = bringing;
       if (bringing) { showPage('page10'); }
-      else { rsvpData.dinnerPlusOne.name = null; showPage('page5'); }
+      else {
+        rsvpData.dinnerPlusOneName = null;
+        showPage('page5');
+      }
     }
 
     function submitDinnerPlusOneDetails() {
       const plusName = (document.getElementById('dinnerPlusOneName')?.value || '').trim();
-      rsvpData.dinnerPlusOne.name = plusName ? plusName : null;
+      rsvpData.dinnerPlusOneName = plusName || null;
       showPage('page5');
     }
 
@@ -1211,19 +1233,44 @@
       const submitBtn = document.getElementById('submitBtn');
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Submitting…'; }
       const notesField = document.getElementById('notes');
-      rsvpData.notes = (notesField?.value || '').trim();
-      rsvpData.timestamp = new Date().toLocaleString("en-MY", { timeZone: "Asia/Kuala_Lumpur", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+      rsvpData.notes = (notesField?.value || '').trim() || null;
+
+      // Build clean payload for Google Sheet
+      const payload = {
+        guestName: rsvpData.guestName,
+        phone: rsvpData.phone,
+        inviteGroup: rsvpData.inviteGroup,
+        churchAttendance: rsvpData.churchAttendance,
+        churchPlusOne: rsvpData.churchPlusOne ? 'Yes' : 'No',
+        churchPlusOneName: rsvpData.churchPlusOneName || '',
+        dinnerAttendance: rsvpData.dinnerAttendance,
+        dinnerPlusOne: rsvpData.dinnerPlusOne ? 'Yes' : 'No',
+        dinnerPlusOneName: rsvpData.dinnerPlusOneName || '',
+        notes: rsvpData.notes || '',
+        timestamp: new Date().toLocaleString("en-MY", {
+          timeZone: "Asia/Kuala_Lumpur",
+          year: "numeric", month: "2-digit", day: "2-digit",
+          hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
+        })
+      };
+
       const confirmation = document.getElementById('confirmation');
       try {
-        await postToGoogleSheet(rsvpData);
+        await postToGoogleSheet(payload);
         updateStepper('done');
-        if (confirmation) { confirmation.innerHTML = '<strong>Thank you!</strong> We\'ve received your RSVP. See you on the big day! 💍'; confirmation.classList.remove('hidden'); }
+        if (confirmation) {
+          confirmation.innerHTML = '<strong>Thank you!</strong> We\'ve received your RSVP. See you on the big day! 💍';
+          confirmation.classList.remove('hidden');
+        }
         const resubmitBox = document.getElementById('resubmitContainer');
         if (resubmitBox) resubmitBox.classList.remove('hidden');
         if (submitBtn) submitBtn.textContent = 'Submitted ✓';
         isSubmitting = true;
       } catch (err) {
-        if (confirmation) { confirmation.innerHTML = '<strong>Oops.</strong> Failed to submit. Please try again.'; confirmation.classList.remove('hidden'); }
+        if (confirmation) {
+          confirmation.innerHTML = '<strong>Oops.</strong> Failed to submit. Please try again.';
+          confirmation.classList.remove('hidden');
+        }
         console.error(err);
         alert("Submit failed: " + (err?.message || err));
         isSubmitting = false;
