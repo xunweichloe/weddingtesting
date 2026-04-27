@@ -53,29 +53,30 @@
       max-height: 100vh;
       max-height: 100dvh;
     }
-    @media (min-width: 721px) and (orientation: portrait) {
+    
+    /* ── Desktop: Show horizontal/landscape photo ── */
+    .photo-desktop {
+      display: block;
+    }
+    .photo-mobile {
+      display: none;
+    }
+    
+    @media (min-width: 721px) {
       .photo-background img {
-        object-fit: contain;
-        max-width: 60vw;
-        max-height: 92vh;
-        max-height: 92dvh;
+        object-fit: cover;
+        max-width: 100vw;
+        max-height: 100vh;
+        max-height: 100dvh;
       }
     }
-    @media (min-width: 721px) and (orientation: landscape) {
-      .photo-background img {
-        object-fit: contain;
-        max-width: 50vw;
-        max-height: 90vh;
-        max-height: 90dvh;
-      }
-    }
+    
     @media (min-width: 1400px) {
       .photo-background img {
-        max-width: 45vw;
-        max-height: 88vh;
-        max-height: 88dvh;
+        object-fit: cover;
       }
     }
+    
     .photo-background.background-mode {
       opacity: 0.55;
       filter: brightness(0.5) blur(3px);
@@ -254,7 +255,7 @@
       font-weight: 300;
     }
 
-    /* ── All Buttons - Unified no-blink, consistent hover/click ── */
+    /* ── All Buttons ── */
     .hero-cta-btn,
     .button,
     .choice-btn {
@@ -464,7 +465,7 @@
     select option { background: #2c1f14; color: #fff; }
     textarea { resize: vertical; }
 
-    /* ── Action button (Continue, Submit) ── */
+    /* ── Action button ── */
     .button {
       display: inline-flex;
       align-items: center;
@@ -497,7 +498,7 @@
       box-shadow: 0 8px 22px rgba(138,111,58,0.36) !important;
     }
 
-    /* ── Choice buttons (Going/Not Going & Yes/No) ── */
+    /* ── Choice buttons ── */
     .choice-group {
       display: flex;
       justify-content: center;
@@ -672,8 +673,14 @@
     .hidden { display: none !important; }
     #resubmitContainer { margin-top: 20px; text-align: center; }
 
-    /* ── Mobile ── */
+    /* ── Mobile: Show portrait photo ── */
     @media (max-width: 720px) {
+      .photo-desktop {
+        display: none !important;
+      }
+      .photo-mobile {
+        display: block !important;
+      }
       .photo-background img {
         object-fit: cover;
         max-width: 100vw;
@@ -758,7 +765,10 @@
 <body>
 
   <div class="photo-background" id="photoBackground">
-    <img src="save_date_user.png" alt="Xun Wei & Chloe Wedding Photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+    <!-- Desktop: Horizontal/Landscape photo -->
+    <img class="photo-desktop" src="save_date_user_desktop.png" alt="Xun Wei & Chloe Wedding Photo" onerror="this.style.display='none'">
+    <!-- Mobile: Portrait photo -->
+    <img class="photo-mobile" src="save_date_user.png" alt="Xun Wei & Chloe Wedding Photo" onerror="this.style.display='none'; this.nextElementSibling ? this.nextElementSibling.style.display='flex' : ''">
     <div class="photo-bg-placeholder" style="display:none">
       <span class="bg-placeholder-icon">💍</span>
       <span class="bg-placeholder-text">Xun Wei &amp; Chloe</span>
@@ -1056,15 +1066,9 @@
 
     function startRSVP() {
       rsvpData = {
-        guestName: null,
-        phone: null,
-        inviteGroup: null,
-        churchAttendance: null,
-        churchPlusOne: false,
-        churchPlusOneName: null,
-        dinnerAttendance: null,
-        dinnerPlusOne: false,
-        dinnerPlusOneName: null,
+        guestName: null, phone: null, inviteGroup: null,
+        churchAttendance: null, churchPlusOne: false, churchPlusOneName: null,
+        dinnerAttendance: null, dinnerPlusOne: false, dinnerPlusOneName: null,
         notes: null
       };
       pageHistory = [];
@@ -1108,10 +1112,7 @@
 
     function goBack() {
       if (!rsvpActive) return;
-      if (pageHistory.length === 0) {
-        resetToHero();
-        return;
-      }
+      if (pageHistory.length === 0) { resetToHero(); return; }
       const prev = pageHistory.pop();
       showPage(prev, true);
     }
@@ -1181,8 +1182,7 @@
       rsvpData.churchAttendance = answer;
       if (answer === 'Yes') { showPage('page8'); }
       else {
-        rsvpData.churchPlusOne = false;
-        rsvpData.churchPlusOneName = null;
+        rsvpData.churchPlusOne = false; rsvpData.churchPlusOneName = null;
         if (rsvpData.inviteGroup === 'C') { showPage('page6'); } else { showPage('page5'); }
       }
     }
@@ -1205,20 +1205,13 @@
     function handleDinnerAttendance(answer) {
       rsvpData.dinnerAttendance = answer;
       if (answer === 'Yes') { showPage('page9'); }
-      else {
-        rsvpData.dinnerPlusOne = false;
-        rsvpData.dinnerPlusOneName = null;
-        showPage('page5');
-      }
+      else { rsvpData.dinnerPlusOne = false; rsvpData.dinnerPlusOneName = null; showPage('page5'); }
     }
 
     function handleDinnerPlusOne(bringing) {
       rsvpData.dinnerPlusOne = bringing;
       if (bringing) { showPage('page10'); }
-      else {
-        rsvpData.dinnerPlusOneName = null;
-        showPage('page5');
-      }
+      else { rsvpData.dinnerPlusOneName = null; showPage('page5'); }
     }
 
     function submitDinnerPlusOneDetails() {
@@ -1235,7 +1228,6 @@
       const notesField = document.getElementById('notes');
       rsvpData.notes = (notesField?.value || '').trim() || null;
 
-      // Build clean payload for Google Sheet
       const payload = {
         guestName: rsvpData.guestName,
         phone: rsvpData.phone,
@@ -1293,7 +1285,7 @@
       resetToHero();
     }
 
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz9Lby2bRX9rqTxCd8rYOyLhOQ2wX6j_89eeMwW4e2FkYjg4JQGv429F3c8r2WsTCn7/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzEEPI5nxzr3OGLdL4F1lidZTlIa0zlrkW5V07LjSxVjNYnpvcjcDHdCclQ8qRx0ovN/exec";
 
     async function postToGoogleSheet(payload) {
       const formBody = new URLSearchParams();
